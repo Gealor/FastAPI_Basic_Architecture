@@ -4,13 +4,20 @@ import uvicorn
 
 from api import router as api_router
 from core.config import settings
-from core.models.db_helper import db_helper
+from core.models import db_helper, Base
+ 
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup
+    # async with db_helper.engine.begin() as conn:
+    #     # чтобы все модели мигрировались нужно чтобы эти модели были известны(т.е. добавить в __init__ туда где лежит Base)
+    #     await conn.run_sync(Base.metadata.create_all)
     yield
     # shutdown
+    # async with db_helper.engine.begin() as conn:
+    #     await conn.run_sync(Base.metadata.drop_all)
     db_helper.dispose()
 
 main_app = FastAPI(
