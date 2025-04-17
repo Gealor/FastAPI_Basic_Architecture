@@ -1,13 +1,23 @@
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
+
+ENV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+ENV_TEMPLATE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.template")
 
 # конфиги для запуска приложения
 class RunConfig(BaseModel):
     host: str = "0.0.0.0"
     port: str = 8000
 
+class ApiV1PrefixConfig(BaseModel):
+    prefix: str = "/v1"
+    users: str = "/users"
+    info: str = "/info"
+
 class ApiPrefixConfig(BaseModel):
     prefix: str = "/api"
+    v1: ApiV1PrefixConfig = ApiV1PrefixConfig()
 
 class DatabaseConfig(BaseModel):
     user: str
@@ -35,7 +45,7 @@ class DatabaseConfig(BaseModel):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file = (".env.template", ".env"),
+        env_file = (ENV_TEMPLATE_PATH, ENV_PATH),
         case_sensitive = False,
         env_nested_delimiter="__",
         env_prefix = "APP_CONFIG__",
