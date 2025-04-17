@@ -10,7 +10,13 @@ from api import router as api_router
 from core.config import settings
 from core.models import db_helper, Base
 from middlewares import LogNewRequirements, ProcessTimeHeaderMiddleware
- 
+
+logging.basicConfig(
+    format = settings.log.log_format,
+    level = settings.log.log_level_value,
+)
+
+log = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -35,9 +41,7 @@ main_app.include_router(
     api_router,
 )
 
-
 # ---------------------------------------------------------------------------------------------------------
-log = logging.getLogger(__name__)
 @main_app.middleware("http") # middleware нужен для обработки запроса перед его отправкой обратно к клиенту
 # все функции middleware принимают request, т.е. исходящий запрос от пользователя и call_next - функцию
 # middleware ВСЕГДА ДОЛЖЕН ВОЗВРАЩАТЬ ЗНАЧЕНИЕ, ВНЕ ЗАВИСИМОСТИ ОТ ТОГО БЫЛО ЛИ ИСКЛЮЧЕНИЕ ИЛИ НЕТ.
@@ -48,7 +52,7 @@ async def log_new_requirements(
     log.info(
         "Request %s to %s",
         request.method,
-        request.url.path,
+        request.url,
     )
     return await call_next(request) # await call_next(request) - это мы получаем ответ(response) вызыванной ручки
 
