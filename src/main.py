@@ -40,6 +40,7 @@ main_app.include_router(
 log = logging.getLogger(__name__)
 @main_app.middleware("http") # middleware нужен для обработки запроса перед его отправкой обратно к клиенту
 # все функции middleware принимают request, т.е. исходящий запрос от пользователя и call_next - функцию
+# middleware ВСЕГДА ДОЛЖЕН ВОЗВРАЩАТЬ ЗНАЧЕНИЕ, ВНЕ ЗАВИСИМОСТИ ОТ ТОГО БЫЛО ЛИ ИСКЛЮЧЕНИЕ ИЛИ НЕТ.
 async def log_new_requirements(
     request : Request,
     call_next : Callable[[Request], Awaitable[Response]] 
