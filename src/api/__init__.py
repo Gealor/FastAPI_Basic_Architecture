@@ -1,4 +1,13 @@
 from fastapi import APIRouter
 
-router = APIRouter() # основной роутер, к которому будут подключаться другие роутеры
+from .api_v1 import router as router_api_v1
+from core.config import settings
+
+router = APIRouter(
+    prefix=settings.api.prefix,
+) # основной роутер, к которому будут подключаться другие роутеры
+
+router.include_router(
+    router_api_v1,
+)
 
