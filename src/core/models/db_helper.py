@@ -20,20 +20,20 @@ class DatabaseHelper:
             max_overflow = max_overflow,
         )
         
-        self.session_factory = async_sessionmaker(
+        self.session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
             bind = self.engine,
             autoflush = False,
             autocommit = False,
             expire_on_commit = False,
         )
     
-    # асинхронное отключение соединения
+    # асинхронное отключение соединения от базы данных
     async def dispose(self):
         await self.engine.dispose()
 
     # получение сессии
     async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
-        async with self.session_factory as session:
+        async with self.session_factory() as session:
             yield session
 
 db_helper = DatabaseHelper(
