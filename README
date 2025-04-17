@@ -1,0 +1,24 @@
+Подробно при передачу таблиц в миграции alembic:
+https://chatgpt.com/share/67ea3531-2e84-8011-8b1c-5ea926f36bc4
+
+Подробно про отношения таблиц в sqlalchemy:
+https://www.youtube.com/watch?v=LKkn-2FId8w&list=PLYnH8mpFQ4akzzS1D9IHkMuXacb-bD4Cl&index=4
+
+Для инициализации асинхронной миграции alembic необходимо ввести alembic init -t async alembic
+При миграциях alembic необходимо:
+    1. применить все миграции до последней ревизии(версии миграционного файла) с помощью команды alembic upgrade head
+    2. с помощью команды alembic revision --autogenerate -m <name_migration> создать миграцию  
+(все эти команды проводятся в каталоге где лежит alembic.ini)!!!
+Для того чтобы откатиться по миграциям alembic нужно использовать команду alembic downgrade -1(или base, чтобы откатиться на начало)
+В случае когда невозможно откатиться удаляем текущую базу данных(которая указывается в NAME параметре ENV файла)
+и создаем ее снова.
+
+Для того чтобы, при изменении переменной server_default миграции видели эти изменения надо в env.py в context.configure
+добавить compare_server_default=True
+
+docker exec -it <id_container> <command> - выполение <command> в docker-контейнере с <id_container>
+
+
+ДРУГОЕ: 
+docker run -it fast_api_arch bash (чтобы войти в контейнер и получить возможность вводить команды из контейнера)
+exit в консоли, чтобы выйти из bash внутри контейнера
