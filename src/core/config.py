@@ -1,3 +1,5 @@
+import logging
+from typing import Literal
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
@@ -5,10 +7,32 @@ import os
 ENV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 ENV_TEMPLATE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.template")
 
+LOG_DEFAULT_FORMAT = (
+    "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
+)
+
 # конфиги для запуска приложения
 class RunConfig(BaseModel):
     host: str = "0.0.0.0"
     port: str = 8000
+
+class LoggingConfig(BaseModel):
+    log_level: Literal[
+        'CRITICAL',
+        'FATAL',
+        'ERROR',
+        'WARN',
+        'WARNING',
+        'INFO',
+        'DEBUG',
+        'NOTSET'
+    ] = 'INFO'
+
+    log_format: str = LOG_DEFAULT_FORMAT
+
+    @property
+    def log_level_value(self) -> int:
+        return logging.getLevelNamesMapping()[self.log_level]
 
 class ApiV1PrefixConfig(BaseModel):
     prefix: str = "/v1"
@@ -52,7 +76,11 @@ class Settings(BaseSettings):
     )
 
     run: RunConfig = RunConfig()
+    log: LoggingConfig = LoggingConfig()
     api: ApiPrefixConfig = ApiPrefixConfig()
-    db: DatabaseConfig
+    db: DatabaseConfig # берем данные из .env файлов, поэтому и не инициируем начальным значением(объектом)
+    
 
 settings = Settings()
+
+# print(logging.getLevelNamesMapping()) # Посмотреть какие уровни логирование есть и какие значения им соответствуют
