@@ -2,9 +2,11 @@
 __all__ = (
     "db_helper",
     "Base",
-    "User"
+    "User",
+    "InfoUser",
 )
 
 from .db_helper import db_helper
 from .base import Base
-from .test_model import User
+from .user import User
+from .info import InfoUser
