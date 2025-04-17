@@ -1,0 +1,37 @@
+version: '3.8'
+networks:
+  dev:
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+    networks:
+      - dev
+
+
+  backend:
+    build: .
+    volumes:
+      - ./src:/app
+    ports:
+      - "8000:8000"
+    networks:
+      - dev
+  
+  db:
+    image: postgres
+    restart: always
+  
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Craft123
+      POSTGRES_DB: fast_api
+    networks:
+      - dev
+
