@@ -18,7 +18,7 @@ class ProcessTimeHeaderMiddleware(BaseHTTPMiddleware):
         return response
     
 class LogNewRequirements(BaseHTTPMiddleware):
-    def __init__(self, *args, logger_ : Logger, **kwargs): # Нельзя просто переопределить метода __init__, для этого надо также прокинуть все аргументы *args и **kwargs и вызвать super().__init__(...)
+    def __init__(self, *args, logger_ : Logger, **kwargs): # Нельзя просто переопределить метод __init__, для этого надо также прокинуть все аргументы *args и **kwargs и вызвать super().__init__(...)
         super().__init__(*args, **kwargs)
         self.log = logger_
 
