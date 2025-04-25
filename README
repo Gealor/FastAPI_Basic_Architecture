@@ -22,3 +22,8 @@ docker exec -it <id_container> <command> - выполение <command> в docke
 ДРУГОЕ: 
 docker run -it fast_api_arch bash (чтобы войти в контейнер и получить возможность вводить команды из контейнера)
 exit в консоли, чтобы выйти из bash внутри контейнера
+
+для доступа к нашему веб-сервису из глобальной сети можно использовать localtunnel:
+https://github.com/localtunnel/localtunnel
+установить его можно с помощью команды npm install -g localtunnel
+для запуска локального туннеля нужно ввести команду lt --port 8000 (или другой порт, на котором запущен веб-сервис) --subdomain <имя_поддомена>
