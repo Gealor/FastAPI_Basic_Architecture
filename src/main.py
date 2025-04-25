@@ -68,7 +68,7 @@ async def add_process_time_to_requests(
 # второй вариант вызова middleware - это если знать как устроены декораторы(а main_app.middleware("http") и есть декоратор)
 main_app.middleware("http")(add_process_time_to_requests)
 # -------------------------------------------------------------------------------------------------------------------
-# либо можно добавлять middleware вот так
+# либо можно добавлять middleware вот так, с помощью определения своих middleware в виде классов
 main_app.add_middleware(
     ProcessTimeHeaderMiddleware,
 )
