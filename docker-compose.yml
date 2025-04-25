@@ -32,6 +32,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Craft123
       POSTGRES_DB: fast_api
+    volumes:
+    - pgdata1:/var/lib/postgresql/data   # монтируем том pgdata1 в /var/lib/postgresql/data для сохранения данных даже после docker compose down
     networks:
       - dev
+
+volumes:  # указание глобального тома где-то в папках докера, чтобы не мозолила глаза
+  pgdata1:
 
