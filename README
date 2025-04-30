@@ -4,6 +4,13 @@ https://chatgpt.com/share/67ea3531-2e84-8011-8b1c-5ea926f36bc4
 Подробно про отношения таблиц в sqlalchemy:
 https://www.youtube.com/watch?v=LKkn-2FId8w&list=PLYnH8mpFQ4akzzS1D9IHkMuXacb-bD4Cl&index=4
 
+
+Установка зависимостей:
+    Создаем файл pyproject.toml
+        package_mode = false - для того чтобы не использовать poetry для сборки, а только для установки зависимостей
+    С помощью команды poetry add <название_библиотеки> устанавливаем библиотеки в проект
+
+
 Для инициализации асинхронной миграции alembic необходимо ввести alembic init -t async alembic
 При миграциях alembic необходимо:
     1. применить все миграции до последней ревизии(версии миграционного файла) с помощью команды alembic upgrade head
