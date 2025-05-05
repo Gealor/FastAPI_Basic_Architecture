@@ -23,8 +23,17 @@ https://www.youtube.com/watch?v=LKkn-2FId8w&list=PLYnH8mpFQ4akzzS1D9IHkMuXacb-bD
 Для того чтобы, при изменении переменной server_default миграции видели эти изменения надо в env.py в context.configure
 добавить compare_server_default=True
 
-docker exec -it <id_container> <command> - выполение <command> в docker-контейнере с <id_container>
+docker exec -it <id_container> <command> - выполнение <command> в docker-контейнере с <id_container>
 
+ВАЖНО!!!
+если использовать Annotated[ClassName, Depends()] для реализации полей ввода в документации FastAPI, 
+то поля объекта будут передаваться как параметры, а не как тело запроса(это можно увидеть в docs, где вместо body будет написано Parameters).
+Это связано с тем, что при поступлении запроса на обработчик FastAPI вызывает все «зависимости» метода, 
+а затем передаёт результаты их выполнения в качестве АРГУМЕНТОВ основной функции, т.е. FastAPI считает, что нам нужно создать объект UserCreate, извлекая его поля из query-параметров.
+
+Чтобы вернуть тело запроса вместо параметров запроса, то необходимо убрать Depends() и оставить аннотацию:
+либо в виде field : ClassName, 
+либо вместо Depends использовать Body() из того же FastAPI
 
 ДРУГОЕ: 
 docker run -it fast_api_arch bash (чтобы войти в контейнер и получить возможность вводить команды из контейнера)
@@ -34,3 +43,4 @@ exit в консоли, чтобы выйти из bash внутри конте�
 https://github.com/localtunnel/localtunnel
 установить его можно с помощью команды npm install -g localtunnel
 для запуска локального туннеля нужно ввести команду lt --port 8000 (или другой порт, на котором запущен веб-сервис) --subdomain <имя_поддомена>
+
