@@ -25,6 +25,7 @@ https://www.youtube.com/watch?v=LKkn-2FId8w&list=PLYnH8mpFQ4akzzS1D9IHkMuXacb-bD
 
 docker exec -it <id_container> <command> - выполнение <command> в docker-контейнере с <id_container>
 
+
 ВАЖНО!!!
 если использовать Annotated[ClassName, Depends()] для реализации полей ввода в документации FastAPI, 
 то поля объекта будут передаваться как параметры, а не как тело запроса(это можно увидеть в docs, где вместо body будет написано Parameters).
@@ -35,9 +36,13 @@ docker exec -it <id_container> <command> - выполнение <command> в doc
 либо в виде field : ClassName, 
 либо вместо Depends использовать Body() из того же FastAPI
 
+
+
 ДРУГОЕ: 
 docker run -it fast_api_arch bash (чтобы войти в контейнер и получить возможность вводить команды из контейнера)
 exit в консоли, чтобы выйти из bash внутри контейнера
+
+
 
 для доступа к нашему веб-сервису из глобальной сети можно использовать localtunnel:
 https://github.com/localtunnel/localtunnel
