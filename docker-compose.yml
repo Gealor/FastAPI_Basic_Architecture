@@ -26,7 +26,7 @@ services:
   
   db:
     image: postgres
-    restart: always
+    # restart: always # это поднимает контейнер каждый раз при запуске Docker Desktop
   
     environment:
       POSTGRES_USER: postgres
