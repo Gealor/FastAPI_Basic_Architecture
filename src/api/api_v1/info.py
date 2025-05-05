@@ -11,14 +11,15 @@ from crud import info as info_crud
 
 router = APIRouter(tags = ["Info"])
 
-
-@router.get("/")
-async def get_info(
+@router.get("/info_by_user_id/{user_id}")
+async def get_info_by_user_id(
+    user_id : int,
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
-) -> list[InfoRead]:
-    infos = await info_crud.get_all_infos(session = session)
-    print(infos)
-    return infos
+) -> InfoWithUser | ErrorResponse:
+    info = await info_crud.get_info_by_user_id(user_id, session)
+    if info is None:
+        return {"msg" : "Информация не найдена"}
+    return info
 
 @router.get("/{info_id}")
 async def get_info_by_info_id(
@@ -30,16 +31,13 @@ async def get_info_by_info_id(
         return {"msg" : "Информация не найдена"}
     return info
 
-@router.get("/info_by_user_id/{user_id}")
-async def get_info_by_user_id(
-    user_id : int,
+@router.get("/")
+async def get_info(
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
-) -> InfoWithUser | ErrorResponse:
-    info = await info_crud.get_info_by_user_id(user_id, session)
-    if info is None:
-        return {"msg" : "Информация не найдена"}
-    return info
-
+) -> list[InfoRead]:
+    infos = await info_crud.get_all_infos(session = session)
+    print(infos)
+    return infos
 
 @router.post("/post_info")
 async def create_info(

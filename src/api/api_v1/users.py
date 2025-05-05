@@ -1,5 +1,5 @@
 from typing import Annotated, Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Body, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
@@ -12,17 +12,6 @@ from core.models import db_helper
 
 
 router = APIRouter(tags = ["Users"])
-
-
-@router.get("/")
-async def get_users(
-    # Depends используется вместе с аннотацией типов Annotated
-    session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
-    # session: AsyncSession = Depends(db_helper.session_getter),
-) -> list[UserRead]:
-    users = await get_all_users(session = session)
-    print(users)
-    return users
 
 @router.get("/with_info")
 async def get_users_with_info(
@@ -55,6 +44,17 @@ async def get_users_by_id(
     if users is None:
         return {"msg" : "Пользователь не найден"}
     return users
+
+@router.get("/")
+async def get_users(
+    # Depends используется вместе с аннотацией типов Annotated
+    session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
+    # session: AsyncSession = Depends(db_helper.session_getter),
+) -> list[UserRead]:
+    users = await get_all_users(session = session)
+    print(users)
+    return users
+
 
 @router.post("/post_user")
 async def create_user(
