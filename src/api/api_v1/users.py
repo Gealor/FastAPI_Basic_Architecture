@@ -6,7 +6,7 @@ from core.config import settings
 from core.schemas.error import ErrorResponse
 from core.schemas.info_and_user import UserWithInfo
 from core.schemas.user import UserCreate, UserDelete, UserNameMail, UserRead
-from crud.users import delete_user_by_id, get_all_users, get_user_by_id
+from crud.users import delete_user_by_id, get_all_users, get_name_mail_by_id, get_user_by_id
 from crud import users as users_crud
 from core.models import db_helper
 
@@ -39,7 +39,7 @@ async def get_users_by_id(
     user_id : int,
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)], 
 ) -> UserNameMail | ErrorResponse: 
-    users = await get_user_by_id(user_id, session)
+    users = await get_name_mail_by_id(user_id, session)
     print(users)
     if users is None:
         return {"msg" : "Пользователь не найден"}
@@ -48,10 +48,13 @@ async def get_users_by_id(
 @router.get("/")
 async def get_users(
     # Depends используется вместе с аннотацией типов Annotated
-    session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
+    session : Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    id : Optional[int] = None,
     # session: AsyncSession = Depends(db_helper.session_getter),
-) -> list[UserRead]:
-    users = await get_all_users(session = session)
+) -> list[UserRead] | UserRead | ErrorResponse:
+    users = await get_all_users(session = session) if id is None else await get_user_by_id(id, session)
+    if users is None:
+        return {"msg" : "Пользователь не найден"}
     print(users)
     return users
 
@@ -59,7 +62,7 @@ async def get_users(
 @router.post("/post_user")
 async def create_user(
     # чтобы были поля ввода ввожу Annotated с пустой зависимостью Depends
-    user_create: Annotated[UserCreate, Depends()],  # тело запроса
+    user_create: Annotated[UserCreate, Depends()],  # тело запроса(Body Parameters) заменились на параметры запроса
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
     # session: AsyncSession = Depends(db_helper.session_getter)
 ) -> UserRead:
