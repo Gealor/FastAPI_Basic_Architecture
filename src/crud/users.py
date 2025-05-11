@@ -16,7 +16,7 @@ async def get_all_users(session: AsyncSession) -> Sequence[User]:
     return result.all()
 
 
-async def get_user_by_id(
+async def get_name_mail_by_id(
         user_id : int,
         session : AsyncSession,
 ) -> UserNameMail | None:
@@ -24,6 +24,14 @@ async def get_user_by_id(
     # execute используется, если нужно выбрать несколько(больше чем 1) столбцов(как тут username и mail)
     result = await session.execute(stmt)
     return result.first() # возвращает первую строку результата запроса, если такой нет, то None
+
+async def get_user_by_id(
+        user_id : int,
+        session : AsyncSession,
+) -> User | None:
+    stmt = select(User).where(User.id == user_id).order_by(User.id)
+    result = await session.scalar(stmt)
+    return result # возвращает первую строку результата запроса, если такой нет, то None
 
 
 async def create_user(
