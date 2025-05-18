@@ -135,6 +135,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+fast_application
 
 # Spyder project settings
 .spyderproject
