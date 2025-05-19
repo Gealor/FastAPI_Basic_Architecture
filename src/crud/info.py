@@ -10,8 +10,8 @@ from core.models.user import User
 from core.schemas.info import InfoCreate, InfoRead
 from core.schemas.info_and_user import InfoWithUser
 
-async def get_all_infos(session : AsyncSession) -> Sequence[InfoUser]:
-    stmt = select(InfoUser).options(joinedload(InfoUser.user)).order_by(InfoUser.id)
+async def get_all_infos(session : AsyncSession) -> Sequence[InfoRead]:
+    stmt = select(InfoUser).order_by(InfoUser.id)
     result = await session.scalars(stmt)
     return result.all()
 
