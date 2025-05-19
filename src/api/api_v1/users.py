@@ -62,7 +62,7 @@ async def get_users(
 @router.post("/post_user")
 async def create_user(
     # чтобы были поля ввода ввожу Annotated с пустой зависимостью Depends
-    user_create: Annotated[UserCreate, Depends()],  # тело запроса(Body Parameters) заменились на параметры запроса
+    user_create: Annotated[UserCreate, Depends()],  # тело запроса(Body Parameters) заменилось на параметры запроса!!!!
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
     # session: AsyncSession = Depends(db_helper.session_getter)
 ) -> UserRead:
