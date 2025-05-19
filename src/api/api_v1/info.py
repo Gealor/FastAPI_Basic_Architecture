@@ -41,7 +41,7 @@ async def get_info(
 
 @router.post("/post_info")
 async def create_info(
-    info_create: Annotated[InfoCreate, Depends()],  # тело запроса
+    info_create: Annotated[InfoCreate, Depends()],  # не тело запроса, а параметры запроса
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
 ) -> InfoRead:
     info = await info_crud.create_info(info_create, session)
