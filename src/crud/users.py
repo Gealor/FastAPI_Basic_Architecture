@@ -6,9 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import User, db_helper
 from core.schemas.info import InfoBase
-from core.schemas.user import UserCreate, UserNameMail
+from core.schemas.info_and_user import UserWithInfo
+from core.schemas.user import UserCreate, UserNameMail, UserRead
 
-async def get_all_users(session: AsyncSession) -> Sequence[User]:
+async def get_all_users(session: AsyncSession) -> Sequence[UserRead]:
     # в select указывается модель таблицы(или столбцы из таблицы), из которой нужно достать данные(обращается именно к этой таблице)
     stmt = select(User).order_by(User.id)
     # scalars используется, если нужно выбрать один столбец или целую модель
@@ -28,7 +29,7 @@ async def get_name_mail_by_id(
 async def get_user_by_id(
         user_id : int,
         session : AsyncSession,
-) -> User | None:
+) -> UserRead | None:
     stmt = select(User).where(User.id == user_id).order_by(User.id)
     result = await session.scalar(stmt)
     return result # возвращает первую строку результата запроса, если такой нет, то None
@@ -37,7 +38,7 @@ async def get_user_by_id(
 async def create_user(
         user_create : UserCreate,
         session : AsyncSession,
-) -> User:
+) -> UserRead:
     # добавить хэширование пароля
     user = User(**user_create.model_dump())
     session.add(user)
@@ -59,7 +60,7 @@ async def delete_user_by_id(
 
 async def get_users_with_info(
         session: AsyncSession,
-) -> list[User]:
+) -> Sequence[UserWithInfo]:
                         # это нужно для подгрузки данных из других таблиц, для фильтрации надо использовать .join(User.info_user)
     stmt = select(User).options(joinedload(User.info_user)).order_by(User.id)
     result = await session.scalars(stmt)
@@ -68,7 +69,7 @@ async def get_users_with_info(
 async def get_user_by_id_with_info(
         user_id: int,
         session: AsyncSession,
-) -> User | None:
+) -> UserWithInfo | None:
     stmt = select(User).options(joinedload(User.info_user)).where(User.id == user_id).order_by(User.id)
     result = await session.scalars(stmt)
     return result.first()  # возвращает первую строку результата запроса, если такой нет, то None
