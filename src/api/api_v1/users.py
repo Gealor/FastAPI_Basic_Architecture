@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import settings
 from core.schemas.error import ErrorResponse
 from core.schemas.info_and_user import UserWithInfo
-from core.schemas.user import UserCreate, UserDelete, UserNameMail, UserRead
+from core.schemas.user import UserCreate, UserDelete, UserNameMail, UserRead, UserUpdate
 from crud.users import delete_user_by_id, get_all_users, get_name_mail_by_id, get_user_by_id
 from crud import users as users_crud
 from core.models import db_helper
@@ -61,8 +61,9 @@ async def get_users(
 
 @router.post("/post_user")
 async def create_user(
+    user_create : UserCreate,
     # чтобы были поля ввода ввожу Annotated с пустой зависимостью Depends
-    user_create: Annotated[UserCreate, Depends()],  # тело запроса(Body Parameters) заменилось на параметры запроса!!!!
+    # user_create: Annotated[UserCreate, Depends()],  # тело запроса(Body Parameters) заменилось на параметры запроса!!!!
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
     # session: AsyncSession = Depends(db_helper.session_getter)
 ) -> UserRead:
@@ -77,3 +78,17 @@ async def delete_user(
     await delete_user_by_id(user_id, session)
     return {"deleted" : user_id}
 
+
+@router.patch("/update_user")
+async def update_user(
+    user_id : int,
+    new_data: UserUpdate,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
+) -> UserUpdate | ErrorResponse:
+    user = await get_user_by_id(user_id, session)
+    print(user)
+    if user is None:
+        return {"msg" : "Пользователя с данным id нет"}
+    values_dict = new_data.model_dump(exclude_unset=True) # exclude_unset - исключать поля, которые не были заданы явно
+    await users_crud.update_user_data(user, values_dict, session)
+    return new_data
