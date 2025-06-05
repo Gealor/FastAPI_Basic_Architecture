@@ -34,6 +34,12 @@ class LoggingConfig(BaseModel):
     def log_level_value(self) -> int:
         return logging.getLevelNamesMapping()[self.log_level]
 
+class AuthApiPrefixConfig(BaseModel):
+    prefix: str = '/auth'
+    basic_auth: str = '/basic-auth'
+    header_auth: str = '/header-auth'
+    cookie_auth: str = '/cookie-auth'
+
 class ApiV1PrefixConfig(BaseModel):
     prefix: str = "/v1"
     users: str = "/users"
@@ -42,6 +48,7 @@ class ApiV1PrefixConfig(BaseModel):
 class ApiPrefixConfig(BaseModel):
     prefix: str = "/api"
     v1: ApiV1PrefixConfig = ApiV1PrefixConfig()
+    auth: AuthApiPrefixConfig = AuthApiPrefixConfig()
 
 class DatabaseConfig(BaseModel):
     user: str
