@@ -51,3 +51,13 @@ async def delete_info_by_id(
     stmt = delete(InfoUser).where(InfoUser.id==info_id)
     await session.execute(stmt)
     await session.commit()
+
+
+async def update_info_data(
+    info : InfoUser,
+    new_info : dict,
+    session : AsyncSession,
+):
+    for key, value in new_info.items():
+        setattr(info, key, value)
+    await session.commit()
