@@ -1,4 +1,3 @@
-import asyncio
 from typing import Annotated, Sequence
 from sqlalchemy import delete, select
 from sqlalchemy.orm import joinedload
@@ -7,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import User, db_helper
 from core.schemas.info import InfoBase
 from core.schemas.info_and_user import UserWithInfo
-from core.schemas.user import UserCreate, UserNameMail, UserRead
+from core.schemas.user import UserCreate, UserNameMail, UserRead, UserUpdate
 
 async def get_all_users(session: AsyncSession) -> Sequence[UserRead]:
     # в select указывается модель таблицы(или столбцы из таблицы), из которой нужно достать данные(обращается именно к этой таблице)
@@ -74,3 +73,13 @@ async def get_user_by_id_with_info(
     result = await session.scalars(stmt)
     return result.first()  # возвращает первую строку результата запроса, если такой нет, то None
 
+
+async def update_user_data(
+        user: User,
+        new_data: dict,
+        session: AsyncSession,
+):
+    for key, value in new_data.items():
+        setattr(user, key, value)
+    await session.commit()
+    
