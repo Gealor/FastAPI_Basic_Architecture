@@ -13,6 +13,11 @@ class UserCreate(UserBase):
 class UserRead(UserBase):
     id: int
 
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    mail: Optional[EmailStr] = None
+    password: Optional[str] = None
+
 class UserDelete(BaseModel):
     deleted : int
 
