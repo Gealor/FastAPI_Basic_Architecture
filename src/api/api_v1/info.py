@@ -1,9 +1,8 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
-from core.schemas.error import ErrorResponse
 from core.schemas.info import InfoCreate, InfoDelete, InfoRead, InfoUpdate
 from core.schemas.info_and_user import InfoWithUser
 from crud import info as info_crud
@@ -15,20 +14,26 @@ router = APIRouter(tags = ["Info"])
 async def get_info_by_user_id(
     user_id : int,
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
-) -> InfoWithUser | ErrorResponse:
+) -> InfoWithUser:
     info = await info_crud.get_info_by_user_id(user_id, session)
     if info is None:
-        return {"msg" : "Информация не найдена"}
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Информация не найдена"
+        )
     return info
 
 @router.get("/{info_id}")
 async def get_info_by_info_id(
     info_id : int,
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
-) -> InfoRead | ErrorResponse:
+) -> InfoRead:
     info = await info_crud.get_info_by_id(info_id, session)
     if info is None:
-        return {"msg" : "Информация не найдена"}
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Информация не найдена"
+        )
     return info
 
 @router.get("/")
@@ -61,10 +66,13 @@ async def update_info(
     user_id : int,
     new_info : InfoUpdate,
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
-) -> InfoUpdate | ErrorResponse:
+) -> InfoUpdate:
     info = await get_info_by_user_id(user_id, session)
     if info is None:
-        return {"msg" : "Информация не найдена"}
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Информация не найдена"
+        )
     info_data = new_info.model_dump(exclude_unset=True)
     await info_crud.update_info_data(info, info_data, session)
     return new_info
