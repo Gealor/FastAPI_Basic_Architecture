@@ -1,3 +1,4 @@
+# Ссылки, которые мне помогли
 Подробно при передачу таблиц в миграции alembic:
 https://chatgpt.com/share/67ea3531-2e84-8011-8b1c-5ea926f36bc4
 
@@ -5,12 +6,16 @@ https://chatgpt.com/share/67ea3531-2e84-8011-8b1c-5ea926f36bc4
 https://www.youtube.com/watch?v=LKkn-2FId8w&list=PLYnH8mpFQ4akzzS1D9IHkMuXacb-bD4Cl&index=4
 
 
+# Poetry
+poetry init - для использования poetry в уже существующем проекте
+poetry new <имя_проекта> - для создания проекта с нуля
 Установка зависимостей:
     Создаем файл pyproject.toml
         package_mode = false - для того чтобы не использовать poetry для сборки, а только для установки зависимостей
     С помощью команды poetry add <название_библиотеки> устанавливаем библиотеки в проект
 
 
+# Alembic
 Для инициализации асинхронной миграции alembic необходимо ввести alembic init -t async alembic
 При миграциях alembic необходимо:
     1. применить все миграции до последней ревизии(версии миграционного файла) с помощью команды alembic upgrade head
@@ -22,8 +27,6 @@ https://www.youtube.com/watch?v=LKkn-2FId8w&list=PLYnH8mpFQ4akzzS1D9IHkMuXacb-bD
 
 Для того чтобы, при изменении переменной server_default миграции видели эти изменения надо в env.py в context.configure
 добавить compare_server_default=True
-
-docker exec -it <id_container> <command> - выполнение <command> в docker-контейнере с <id_container>
 
 
 ВАЖНО!!!
@@ -39,16 +42,20 @@ docker exec -it <id_container> <command> - выполнение <command> в doc
 
 
 ДРУГОЕ: 
+# Docker
 docker run -it fast_api_arch bash (чтобы войти в контейнер и получить возможность вводить команды из контейнера)
 exit в консоли, чтобы выйти из bash внутри контейнера
 
+docker exec -it <id_container> <command> - выполнение <command> в docker-контейнере с <id_container>
+
+# Git
 Удалить папку или файл из git репозитория, но оставить ее локально: git rm -r --cached folder_name/file_name
 rm - удалить 
 -r - рекурсивное удаление(применяется ко всем файлам, подпапкам внутри указанной папки)
 --cached - убрать папку из отслеживания Git, не удаляя ее из локальной файловой системы
 
 
-
+# деплой в глобальную сеть
 для доступа к нашему веб-сервису из глобальной сети можно использовать localtunnel:
 https://github.com/localtunnel/localtunnel
 установить его можно с помощью команды npm install -g localtunnel
