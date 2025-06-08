@@ -1,5 +1,6 @@
+from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from pydantic import EmailStr
 
 class UserBase(BaseModel):
@@ -12,6 +13,7 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     id: int
+    created_at: datetime
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
