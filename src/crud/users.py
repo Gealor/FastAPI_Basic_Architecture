@@ -3,6 +3,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from auth.tools import hash_password
 from core.models import User, db_helper
 from core.schemas.info import InfoBase
 from core.schemas.info_and_user import UserWithInfo
@@ -38,7 +39,9 @@ async def create_user(
         user_create : UserCreate,
         session : AsyncSession,
 ) -> UserRead:
-    # добавить хэширование пароля
+    # хэширование пароля
+    user_create.password = hash_password(user_create.password).decode('utf-8')
+
     user = User(**user_create.model_dump())
     session.add(user)
     await session.commit()
@@ -60,7 +63,7 @@ async def delete_user_by_id(
 async def get_users_with_info(
         session: AsyncSession,
 ) -> Sequence[UserWithInfo]:
-                        # это нужно для подгрузки данных из других таблиц, для фильтрации надо использовать .join(User.info_user)
+                # это нужно для подгрузки данных из других таблиц, для фильтрации надо использовать .join(User.info_user)
     stmt = select(User).options(joinedload(User.info_user)).order_by(User.id)
     result = await session.scalars(stmt)
     return result.all()
@@ -79,6 +82,8 @@ async def update_user_data(
         new_data: dict,
         session: AsyncSession,
 ):
+    if "password" in new_data:
+        new_data["password"] = hash_password(new_data["password"]).decode('utf-8')
     for key, value in new_data.items():
         setattr(user, key, value)
     await session.commit()
