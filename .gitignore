@@ -135,8 +135,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-# folder virtualenv 
-fast_application/ 
+
 
 # Spyder project settings
 .spyderproject
@@ -174,3 +173,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+# JWT keys and certificates
+certs/
