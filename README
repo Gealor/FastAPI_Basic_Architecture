@@ -11,6 +11,7 @@ https://www.youtube.com/watch?v=LKkn-2FId8w&list=PLYnH8mpFQ4akzzS1D9IHkMuXacb-bD
 
 
 # Poetry
+https://habr.com/ru/articles/740376/
 poetry init - для использования poetry в уже существующем проекте
 poetry new <имя_проекта> - для создания проекта с нуля
 Установка зависимостей:
