@@ -24,6 +24,7 @@ async def auth_login_cookie(
     response.set_cookie(
         key = COOKIE_SESSION_ID_KEY,
         value = session_id,
+        # max_age=60, # время жизни куки в секундах(после этого кука удаляется из заголовков ответа(Response) и запроса(Request))
     )
     return {"result" : "ok"}
 
