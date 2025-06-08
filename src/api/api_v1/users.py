@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import settings
 from core.schemas.info_and_user import UserWithInfo
 from core.schemas.user import UserCreate, UserDelete, UserNameMail, UserRead, UserUpdate
-from crud.users import delete_user_by_id, get_all_users, get_name_mail_by_id, get_user_by_id
 from crud import users as users_crud
 from core.models import db_helper
 
@@ -44,7 +43,7 @@ async def get_users_by_id(
     user_id : int,
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)], 
 ) -> UserNameMail: 
-    users = await get_name_mail_by_id(user_id, session)
+    users = await users_crud.get_name_mail_by_id(user_id, session)
     print(users)
     if users is None:
         raise HTTPException(
@@ -61,7 +60,7 @@ async def get_users(
     id : Optional[int] = None,
     # session: AsyncSession = Depends(db_helper.session_getter),
 ) -> list[UserRead] | UserRead:
-    users = await get_all_users(session = session) if id is None else await get_user_by_id(id, session)
+    users = await users_crud.get_all_users(session = session) if id is None else await users_crud.get_user_by_id(id, session)
     if users is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -87,7 +86,7 @@ async def delete_user(
     user_id : int,
     session : Annotated[AsyncSession, Depends(db_helper.session_getter)]
 ) -> UserDelete:
-    await delete_user_by_id(user_id, session)
+    await users_crud.delete_user_by_id(user_id, session)
     return {"deleted" : user_id}
 
 
@@ -97,7 +96,7 @@ async def update_user(
     new_data: UserUpdate,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
 ) -> UserUpdate:
-    user = await get_user_by_id(user_id, session)
+    user = await users_crud.get_user_by_id(user_id, session)
     print(user)
     if user is None:
         raise HTTPException(
