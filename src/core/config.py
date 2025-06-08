@@ -1,11 +1,16 @@
 import logging
+from pathlib import Path
 from typing import Literal
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 
-ENV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
-ENV_TEMPLATE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.template")
+BASE_DIR = Path(__file__).parent.parent
+
+ENV_PATH = BASE_DIR / ".env"
+ENV_TEMPLATE_PATH = BASE_DIR / ".env.template"
+# ENV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+# ENV_TEMPLATE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.template")
 
 LOG_DEFAULT_FORMAT = (
     "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
@@ -39,6 +44,7 @@ class AuthApiPrefixConfig(BaseModel):
     basic_auth: str = '/basic-auth'
     header_auth: str = '/header-auth'
     cookie_auth: str = '/cookie-auth'
+    jwt_auth: str = '/jwt-auth'
 
 class ApiV1PrefixConfig(BaseModel):
     prefix: str = "/v1"
@@ -49,6 +55,12 @@ class ApiPrefixConfig(BaseModel):
     prefix: str = "/api"
     v1: ApiV1PrefixConfig = ApiV1PrefixConfig()
     auth: AuthApiPrefixConfig = AuthApiPrefixConfig()
+
+class AuthJWTConfig(BaseModel):
+    private_key_path : Path = BASE_DIR / 'certs' / 'jwt-private.pem'
+    public_key_path : Path = BASE_DIR / 'certs' / 'jwt-public.pem'
+    algorithm : str = "RS256"
+    access_token_expire_minutes : int = 3
 
 class DatabaseConfig(BaseModel):
     user: str
@@ -86,6 +98,7 @@ class Settings(BaseSettings):
     log: LoggingConfig = LoggingConfig()
     api: ApiPrefixConfig = ApiPrefixConfig()
     db: DatabaseConfig # берем данные из .env файлов, поэтому и не инициируем начальным значением(объектом)
+    jwt : AuthJWTConfig = AuthJWTConfig()
     
 
 settings = Settings()
