@@ -178,5 +178,4 @@ cython_debug/
 # JWT keys and certificates
 certs/
 
-src/alembic/versions
 
